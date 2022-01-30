@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { nanoid } from 'nanoid';
 
 import { Layout } from './Layout/Layout';
@@ -15,8 +15,16 @@ export function App() {
     { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
   ];
 
-  const [contacts, setContacts] = useState(defaultContacts);
+  const existingContacts = window.localStorage.getItem('contacts');
+
+  const [contacts, setContacts] = useState(
+    () => JSON.parse(existingContacts) ?? defaultContacts
+  );
   const [filter, setFilter] = useState('');
+
+  useEffect(() => {
+    window.localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
 
   let filterInputId = nanoid();
 
@@ -75,22 +83,3 @@ export function App() {
     </Layout>
   );
 }
-
-//   componentDidMount() {
-//     const existingContacts = localStorage.getItem('contacts');
-//     if (!existingContacts) {
-//       localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-//     }
-
-//     if (existingContacts) {
-//       this.setState({
-//         contacts: JSON.parse(existingContacts),
-//       });
-//     }
-//   }
-
-//   componentDidUpdate(prevState) {
-//     if (prevState.contacts !== this.state.contacts) {
-//       localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-//     }
-//   }
